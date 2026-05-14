@@ -2433,3 +2433,95 @@ export const accounts = [
 //   quiet   — champion gone quiet / not responding
 //   left    — champion left the company
 // ────────────────────────────────────────────────────────────────────
+
+// ────────────────────────────────────────────────────────────────────
+// Normalized accounts (camelCase, app-facing schema)
+// ────────────────────────────────────────────────────────────────────
+export const mockAccounts = accounts.map((a) => ({
+  id: a.id,
+  name: a.name,
+  industry: a.industry,
+  arr: a.arr,
+  daysToRenewal: a.days_to_renewal,
+  champion: a.champion,
+  championStatus: a.champion_status, // active | quiet | left
+  signals: {
+    lastLoginDays: a.signals.last_login_days,
+    lastReplyDays: a.signals.last_reply_days,
+    openTickets: a.signals.ticket_count_30d,
+    ticketSentiment: a.signals.ticket_sentiment, // positive|neutral|frustrated|angry
+    npsScore: a.signals.nps_score,
+    usageTrend: a.signals.usage_trend, // growing|stable|declining|dropped
+    notes: a.notes ?? "",
+  },
+}));
+
+// ────────────────────────────────────────────────────────────────────
+// scoreAccount(account) → { score, level, color }
+// Weighted 0–100 risk score. Higher = more risky.
+// ────────────────────────────────────────────────────────────────────
+export function scoreAccount(account) {
+  const s = account.signals ?? {};
+  let risk = 0;
+
+  // Engagement: silence
+  if (s.lastLoginDays > 30) risk += 22;
+  else if (s.lastLoginDays > 14) risk += 12;
+  else if (s.lastLoginDays > 7) risk += 5;
+
+  if (s.lastReplyDays > 30) risk += 20;
+  else if (s.lastReplyDays > 14) risk += 11;
+  else if (s.lastReplyDays > 7) risk += 4;
+
+  // Support load
+  if (s.openTickets >= 5) risk += 12;
+  else if (s.openTickets >= 3) risk += 7;
+  else if (s.openTickets >= 1) risk += 2;
+
+  // Sentiment
+  const sentimentWeights = { positive: -4, neutral: 0, frustrated: 10, angry: 18 };
+  risk += sentimentWeights[s.ticketSentiment] ?? 0;
+
+  // NPS
+  if (typeof s.npsScore === "number") {
+    if (s.npsScore <= 3) risk += 18;
+    else if (s.npsScore <= 6) risk += 10;
+    else if (s.npsScore <= 7) risk += 4;
+    else if (s.npsScore >= 9) risk -= 4;
+  }
+
+  // Usage trend
+  const trendWeights = { growing: -6, stable: 0, declining: 12, dropped: 22 };
+  risk += trendWeights[s.usageTrend] ?? 0;
+
+  // Champion health
+  const championWeights = { active: 0, quiet: 10, left: 20 };
+  risk += championWeights[account.championStatus] ?? 0;
+
+  // Renewal urgency multiplier — within 30 days amplifies risk
+  const days = account.daysToRenewal ?? 365;
+  let urgency = 1;
+  if (days <= 14) urgency = 1.35;
+  else if (days <= 30) urgency = 1.2;
+  else if (days <= 60) urgency = 1.08;
+  risk = risk * urgency;
+
+  const score = Math.max(0, Math.min(100, Math.round(risk)));
+
+  let level, color;
+  if (score >= 70) {
+    level = "critical";
+    color = "hsl(0 84% 55%)";
+  } else if (score >= 45) {
+    level = "atrisk";
+    color = "hsl(25 95% 55%)";
+  } else if (score >= 25) {
+    level = "monitor";
+    color = "hsl(45 95% 50%)";
+  } else {
+    level = "healthy";
+    color = "hsl(150 65% 42%)";
+  }
+
+  return { score, level, color };
+}
