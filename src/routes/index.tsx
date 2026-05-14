@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { mockAccounts, scoreAccount } from "@/data/mockData";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,11 +12,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const scored = mockAccounts.map((a) => ({ ...a, ...scoreAccount(a) }));
+  const critical = scored.filter((a) => a.level === "critical").length;
+  const atrisk = scored.filter((a) => a.level === "atrisk").length;
   return (
     <div className="space-y-2">
       <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
       <p className="text-sm text-muted-foreground">
-        Your customer health overview will appear here.
+        Tracking {mockAccounts.length} accounts — {critical} critical, {atrisk} at risk.
       </p>
     </div>
   );
