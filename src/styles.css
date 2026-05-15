@@ -62,6 +62,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-risk-critical: var(--risk-critical);
+  --color-risk-atrisk: var(--risk-atrisk);
+  --color-risk-monitor: var(--risk-monitor);
+  --color-risk-healthy: var(--risk-healthy);
+  --color-risk-avg: var(--risk-avg);
 }
 
 :root {
@@ -98,6 +103,11 @@
   --sidebar-accent-foreground: oklch(0.16 0.01 260);
   --sidebar-border: oklch(0.92 0.008 260);
   --sidebar-ring: oklch(0.62 0.21 265);
+  --risk-critical: oklch(0.6 0.22 25);
+  --risk-atrisk: oklch(0.72 0.18 55);
+  --risk-monitor: oklch(0.78 0.16 90);
+  --risk-healthy: oklch(0.68 0.16 155);
+  --risk-avg: oklch(0.55 0.22 290);
 }
 
 .dark {
@@ -133,6 +143,11 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --risk-critical: oklch(0.66 0.22 25);
+  --risk-atrisk: oklch(0.76 0.18 55);
+  --risk-monitor: oklch(0.82 0.16 90);
+  --risk-healthy: oklch(0.72 0.16 155);
+  --risk-avg: oklch(0.65 0.22 290);
 }
 
 @layer base {
