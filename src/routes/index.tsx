@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { mockAccounts, scoreAccount } from "@/data/mockData";
+import { scoreAccount } from "@/data/mockData";
+import { useAccounts } from "@/hooks/use-accounts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -12,14 +13,19 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const scored = mockAccounts.map((a) => ({ ...a, ...scoreAccount(a) }));
+  const { data: accounts, isLoading, error } = useAccounts();
+  const scored = (accounts ?? []).map((a) => ({ ...a, ...scoreAccount(a) }));
   const critical = scored.filter((a) => a.level === "critical").length;
   const atrisk = scored.filter((a) => a.level === "atrisk").length;
   return (
     <div className="space-y-2">
       <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
       <p className="text-sm text-muted-foreground">
-        Tracking {mockAccounts.length} accounts — {critical} critical, {atrisk} at risk.
+        {isLoading
+          ? "Loading accounts…"
+          : error
+            ? "Failed to load accounts."
+            : `Tracking ${scored.length} accounts — ${critical} critical, ${atrisk} at risk.`}
       </p>
     </div>
   );
