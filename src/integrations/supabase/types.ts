@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      accounts: {
+        Row: {
+          arr: number
+          champion: string | null
+          champion_status: string
+          created_at: string
+          days_to_renewal: number
+          id: string
+          industry: string | null
+          name: string
+          signals: Json
+          updated_at: string
+        }
+        Insert: {
+          arr?: number
+          champion?: string | null
+          champion_status?: string
+          created_at?: string
+          days_to_renewal?: number
+          id: string
+          industry?: string | null
+          name: string
+          signals?: Json
+          updated_at?: string
+        }
+        Update: {
+          arr?: number
+          champion?: string | null
+          champion_status?: string
+          created_at?: string
+          days_to_renewal?: number
+          id?: string
+          industry?: string | null
+          name?: string
+          signals?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
