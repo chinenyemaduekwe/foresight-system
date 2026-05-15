@@ -4,7 +4,6 @@ import type { Account, AccountSignals } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -255,11 +254,12 @@ function Index() {
                   <TableCell className="text-sm text-muted-foreground">{a.industry}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Progress
-                        value={a.score}
-                        className="h-2 w-24"
-                        indicatorClassName={t.bar}
-                      />
+                      <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={`h-full ${t.bar} transition-all`}
+                          style={{ width: `${a.score}%` }}
+                        />
+                      </div>
                       <span className="text-sm font-semibold tabular-nums">{a.score}</span>
                     </div>
                   </TableCell>
