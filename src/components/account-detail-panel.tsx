@@ -62,10 +62,9 @@ function RiskGauge({ score, tone }: { score: number; tone: RiskTone }) {
         <path
           d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
           fill="none"
-          stroke="hsl(var(--muted) / 0.6)"
+          stroke="var(--muted)"
           strokeWidth="14"
           strokeLinecap="round"
-          className="stroke-muted"
         />
         {/* filled arc */}
         <path
@@ -152,22 +151,23 @@ function SparklineChart({
           </defs>
           <XAxis
             dataKey="week"
-            stroke="hsl(var(--muted-foreground))"
+            stroke="var(--muted-foreground)"
             fontSize={11}
             tickLine={false}
             axisLine={false}
           />
           <YAxis hide domain={[0, 100]} />
           <Tooltip
-            cursor={{ stroke: "hsl(var(--muted-foreground))", strokeDasharray: 3 }}
+            cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: 3 }}
             contentStyle={{
-              background: "hsl(var(--popover))",
-              border: "1px solid hsl(var(--border))",
+              background: "var(--popover)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               fontSize: 12,
               padding: "6px 10px",
+              color: "var(--popover-foreground)",
             }}
-            labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+            labelStyle={{ color: "var(--muted-foreground)" }}
           />
           <Area
             type="monotone"
