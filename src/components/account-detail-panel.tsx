@@ -212,6 +212,12 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
   const qc = useQueryClient();
   const [form, setForm] = useState<FormState | null>(account ? toForm(account) : null);
   const [saved, setSaved] = useState(false);
+  const analyze = useServerFn(analyzeAccount);
+  const [analysisCache, setAnalysisCache] = useState<
+    Record<string, { key: string; result: AnalysisResult }>
+  >({});
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   useEffect(() => {
     if (account) {
@@ -255,6 +261,40 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 1800);
+  };
+
+  const signalKey = liveAccount
+    ? JSON.stringify({ s: liveAccount.signals, c: liveAccount.championStatus })
+    : "";
+  const cached = liveAccount ? analysisCache[liveAccount.id] : undefined;
+  const analysis = cached && cached.key === signalKey ? cached.result : null;
+
+  const runAnalysis = async () => {
+    if (!liveAccount || !result) return;
+    setAnalyzing(true);
+    setAnalysisError(null);
+    try {
+      const r = await analyze({
+        data: {
+          name: liveAccount.name,
+          industry: liveAccount.industry,
+          arr: liveAccount.arr,
+          daysToRenewal: liveAccount.daysToRenewal,
+          championStatus: liveAccount.championStatus,
+          score: result.score,
+          level: result.level,
+          signals: liveAccount.signals,
+        },
+      });
+      setAnalysisCache((prev) => ({
+        ...prev,
+        [liveAccount.id]: { key: signalKey, result: r },
+      }));
+    } catch (e) {
+      setAnalysisError(e instanceof Error ? e.message : "Analysis failed");
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   return (
