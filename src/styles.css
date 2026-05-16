@@ -67,6 +67,8 @@
   --color-risk-monitor: var(--risk-monitor);
   --color-risk-healthy: var(--risk-healthy);
   --color-risk-avg: var(--risk-avg);
+  --color-ai-accent: var(--ai-accent);
+  --color-ai-accent-foreground: var(--ai-accent-foreground);
 }
 
 :root {
@@ -108,6 +110,8 @@
   --risk-monitor: oklch(0.78 0.16 90);
   --risk-healthy: oklch(0.68 0.16 155);
   --risk-avg: oklch(0.55 0.22 290);
+  --ai-accent: oklch(0.58 0.22 285);
+  --ai-accent-foreground: oklch(0.99 0 0);
 }
 
 .dark {
@@ -148,6 +152,8 @@
   --risk-monitor: oklch(0.82 0.16 90);
   --risk-healthy: oklch(0.72 0.16 155);
   --risk-avg: oklch(0.65 0.22 290);
+  --ai-accent: oklch(0.7 0.2 285);
+  --ai-accent-foreground: oklch(0.16 0.01 260);
 }
 
 @layer base {
