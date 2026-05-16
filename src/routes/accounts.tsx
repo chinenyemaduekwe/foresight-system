@@ -5,15 +5,8 @@ import type { Account, AccountSignals, RiskLevel } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { AccountDetailPanel } from "@/components/account-detail-panel";
 import {
   Table,
   TableBody,
@@ -370,114 +363,12 @@ function AccountsPage() {
         </Table>
       </Card>
 
-      <Sheet open={!!selected} onOpenChange={(o) => !o && setSelectedId(null)}>
-        <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-lg">
-          {selected ? <AccountDetail account={selected} /> : null}
-        </SheetContent>
-      </Sheet>
+      <AccountDetailPanel
+        account={selected}
+        open={!!selected}
+        onOpenChange={(o) => !o && setSelectedId(null)}
+      />
     </div>
   );
 }
 
-function AccountDetail({ account }: { account: ScoredAccount }) {
-  const t = toneStyles[account.level as RiskTone];
-  const tones = signalTones(account.signals);
-  const s = account.signals;
-  const fields: { label: string; value: React.ReactNode; tone: RiskTone }[] = [
-    { label: "Last login",   value: `${s.lastLoginDays}d ago`, tone: tones[0] },
-    { label: "Last reply",   value: `${s.lastReplyDays}d ago`, tone: tones[1] },
-    { label: "Open tickets", value: s.openTickets,             tone: tones[2] },
-    { label: "Sentiment",    value: s.ticketSentiment,         tone: tones[3] },
-    { label: "NPS",          value: s.npsScore,                tone: tones[4] },
-    { label: "Usage trend",  value: s.usageTrend,              tone: tones[5] },
-  ];
-  return (
-    <div className="space-y-6">
-      <SheetHeader className="space-y-2 text-left">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className={`border-transparent font-medium ${t.bg} ${t.fg}`}>
-            {levelLabel[account.level]}
-          </Badge>
-          <span className="text-xs text-muted-foreground">{account.id}</span>
-        </div>
-        <SheetTitle className="text-xl">{account.name}</SheetTitle>
-        <SheetDescription>
-          {account.industry} · {formatArr(account.arr)} ARR · {account.daysToRenewal}d to renewal
-        </SheetDescription>
-      </SheetHeader>
-
-      <Card className="p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Risk score</p>
-            <p className="mt-1 text-3xl font-semibold tabular-nums">{account.score}</p>
-          </div>
-          <TrendArrow dir={account.trend} />
-        </div>
-        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div className={`h-full ${t.bar}`} style={{ width: `${account.score}%` }} />
-        </div>
-      </Card>
-
-      <div>
-        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Signals
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          {fields.map((f) => {
-            const ft = toneStyles[f.tone];
-            return (
-              <div key={f.label} className="rounded-lg border p-3">
-                <div className="flex items-center gap-2">
-                  <span className={`h-2 w-2 rounded-full ${ft.bar}`} />
-                  <p className="text-xs text-muted-foreground">{f.label}</p>
-                </div>
-                <p className="mt-1 text-sm font-medium capitalize">{f.value}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Champion
-        </h3>
-        <div className="flex items-center justify-between rounded-lg border p-3">
-          <div>
-            <p className="text-sm font-medium">{account.champion || "—"}</p>
-            <p className="text-xs capitalize text-muted-foreground">{account.championStatus}</p>
-          </div>
-          <Badge
-            variant="outline"
-            className={`border-transparent capitalize ${
-              account.championStatus === "active"
-                ? toneStyles.healthy.bg + " " + toneStyles.healthy.fg
-                : account.championStatus === "quiet"
-                  ? toneStyles.atrisk.bg + " " + toneStyles.atrisk.fg
-                  : toneStyles.critical.bg + " " + toneStyles.critical.fg
-            }`}
-          >
-            {account.championStatus}
-          </Badge>
-        </div>
-      </div>
-
-      {account.signals.notes ? (
-        <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Notes
-          </h3>
-          <p className="rounded-lg border p-3 text-sm leading-relaxed text-muted-foreground">
-            {account.signals.notes}
-          </p>
-        </div>
-      ) : null}
-
-      <div className="flex gap-2">
-        <Button className="flex-1">Open playbook</Button>
-        <Button variant="outline" className="flex-1">Log signal</Button>
-      </div>
-    </div>
-  );
-}
