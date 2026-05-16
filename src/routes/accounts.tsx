@@ -363,11 +363,11 @@ function AccountsPage() {
         </Table>
       </Card>
 
-      <Sheet open={!!selected} onOpenChange={(o) => !o && setSelectedId(null)}>
-        <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-lg">
-          {selected ? <AccountDetail account={selected} /> : null}
-        </SheetContent>
-      </Sheet>
+      <AccountDetailPanel
+        account={selected}
+        open={!!selected}
+        onOpenChange={(o) => !o && setSelectedId(null)}
+      />
     </div>
   );
 }
