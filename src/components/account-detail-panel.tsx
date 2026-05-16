@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Activity, AlertTriangle, MessageSquare, Star, TrendingUp, UserCheck } from "lucide-react";
+import { Activity, AlertTriangle, Loader2, MessageSquare, Sparkles, Star, TrendingUp, UserCheck } from "lucide-react";
 
 import {
   Sheet,
@@ -26,6 +27,7 @@ import { Card } from "@/components/ui/card";
 
 import type { Account, AccountSignals } from "@/data/mockData";
 import { scoreAccount } from "@/data/mockData";
+import { analyzeAccount, type AnalysisResult } from "@/lib/analyze-account.functions";
 import {
   championTone,
   formatArr,
