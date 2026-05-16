@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Activity, AlertTriangle, MessageSquare, Star, TrendingUp, UserCheck } from "lucide-react";
+import { Activity, AlertTriangle, Loader2, MessageSquare, Sparkles, Star, TrendingUp, UserCheck } from "lucide-react";
 
 import {
   Sheet,
@@ -26,6 +27,7 @@ import { Card } from "@/components/ui/card";
 
 import type { Account, AccountSignals } from "@/data/mockData";
 import { scoreAccount } from "@/data/mockData";
+import { analyzeAccount, type AnalysisResult } from "@/lib/analyze-account.functions";
 import {
   championTone,
   formatArr,
@@ -210,6 +212,12 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
   const qc = useQueryClient();
   const [form, setForm] = useState<FormState | null>(account ? toForm(account) : null);
   const [saved, setSaved] = useState(false);
+  const analyze = useServerFn(analyzeAccount);
+  const [analysisCache, setAnalysisCache] = useState<
+    Record<string, { key: string; result: AnalysisResult }>
+  >({});
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   useEffect(() => {
     if (account) {
@@ -253,6 +261,40 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 1800);
+  };
+
+  const signalKey = liveAccount
+    ? JSON.stringify({ s: liveAccount.signals, c: liveAccount.championStatus })
+    : "";
+  const cached = liveAccount ? analysisCache[liveAccount.id] : undefined;
+  const analysis = cached && cached.key === signalKey ? cached.result : null;
+
+  const runAnalysis = async () => {
+    if (!liveAccount || !result) return;
+    setAnalyzing(true);
+    setAnalysisError(null);
+    try {
+      const r = await analyze({
+        data: {
+          name: liveAccount.name,
+          industry: liveAccount.industry,
+          arr: liveAccount.arr,
+          daysToRenewal: liveAccount.daysToRenewal,
+          championStatus: liveAccount.championStatus,
+          score: result.score,
+          level: result.level,
+          signals: liveAccount.signals,
+        },
+      });
+      setAnalysisCache((prev) => ({
+        ...prev,
+        [liveAccount.id]: { key: signalKey, result: r },
+      }));
+    } catch (e) {
+      setAnalysisError(e instanceof Error ? e.message : "Analysis failed");
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   return (
@@ -377,6 +419,85 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
                 <p className="rounded-lg border bg-card p-3 text-sm leading-relaxed text-muted-foreground">
                   {liveAccount.signals.notes || "No notes recorded for this account."}
                 </p>
+              </div>
+
+              {/* AI Analysis */}
+              <div className="rounded-lg border border-ai-accent/30 bg-gradient-to-br from-ai-accent/10 via-ai-accent/5 to-transparent p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-ai-accent/15 text-ai-accent">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                    <h3 className="text-sm font-semibold">AI Risk Analysis</h3>
+                  </div>
+                  {analysis ? (
+                    <Button
+                      onClick={runAnalysis}
+                      disabled={analyzing}
+                      size="sm"
+                      variant="outline"
+                      className="h-7 border-ai-accent/40 text-ai-accent hover:bg-ai-accent/10 hover:text-ai-accent"
+                    >
+                      {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Re-analyze"}
+                    </Button>
+                  ) : null}
+                </div>
+
+                {analyzing ? (
+                  <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin text-ai-accent" />
+                    Analyzing signals with AI…
+                  </div>
+                ) : analysis ? (
+                  <div className="space-y-3">
+                    <p className="text-sm leading-relaxed text-foreground/90">{analysis.summary}</p>
+                    <div className="space-y-2">
+                      {analysis.steps.map((step, i) => (
+                        <div
+                          key={i}
+                          className="rounded-md border-l-2 border-ai-accent bg-card/60 p-3"
+                        >
+                          <div className="flex items-baseline justify-between gap-2">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-xs font-semibold tabular-nums text-ai-accent">
+                                {String(i + 1).padStart(2, "0")}
+                              </span>
+                              <span className="text-sm font-medium">{step.title}</span>
+                            </div>
+                            <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                              {step.timeline}
+                            </span>
+                          </div>
+                          {step.detail ? (
+                            <p className="mt-1 pl-6 text-xs leading-relaxed text-muted-foreground">
+                              {step.detail}
+                            </p>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      Get a plain-English risk summary and a prioritized action plan
+                      tailored to this account's signals.
+                    </p>
+                    <Button
+                      onClick={runAnalysis}
+                      disabled={analyzing}
+                      size="sm"
+                      className="bg-ai-accent text-ai-accent-foreground hover:bg-ai-accent/90"
+                    >
+                      <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                      Analyze Account
+                    </Button>
+                  </div>
+                )}
+
+                {analysisError ? (
+                  <p className="mt-3 text-xs text-risk-critical">{analysisError}</p>
+                ) : null}
               </div>
 
               {/* Update form */}
