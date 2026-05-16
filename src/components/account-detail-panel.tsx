@@ -421,6 +421,85 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
                 </p>
               </div>
 
+              {/* AI Analysis */}
+              <div className="rounded-lg border border-ai-accent/30 bg-gradient-to-br from-ai-accent/10 via-ai-accent/5 to-transparent p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-ai-accent/15 text-ai-accent">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                    <h3 className="text-sm font-semibold">AI Risk Analysis</h3>
+                  </div>
+                  {analysis ? (
+                    <Button
+                      onClick={runAnalysis}
+                      disabled={analyzing}
+                      size="sm"
+                      variant="outline"
+                      className="h-7 border-ai-accent/40 text-ai-accent hover:bg-ai-accent/10 hover:text-ai-accent"
+                    >
+                      {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Re-analyze"}
+                    </Button>
+                  ) : null}
+                </div>
+
+                {analyzing ? (
+                  <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin text-ai-accent" />
+                    Analyzing signals with AI…
+                  </div>
+                ) : analysis ? (
+                  <div className="space-y-3">
+                    <p className="text-sm leading-relaxed text-foreground/90">{analysis.summary}</p>
+                    <div className="space-y-2">
+                      {analysis.steps.map((step, i) => (
+                        <div
+                          key={i}
+                          className="rounded-md border-l-2 border-ai-accent bg-card/60 p-3"
+                        >
+                          <div className="flex items-baseline justify-between gap-2">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-xs font-semibold tabular-nums text-ai-accent">
+                                {String(i + 1).padStart(2, "0")}
+                              </span>
+                              <span className="text-sm font-medium">{step.title}</span>
+                            </div>
+                            <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                              {step.timeline}
+                            </span>
+                          </div>
+                          {step.detail ? (
+                            <p className="mt-1 pl-6 text-xs leading-relaxed text-muted-foreground">
+                              {step.detail}
+                            </p>
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      Get a plain-English risk summary and a prioritized action plan
+                      tailored to this account's signals.
+                    </p>
+                    <Button
+                      onClick={runAnalysis}
+                      disabled={analyzing}
+                      size="sm"
+                      className="bg-ai-accent text-ai-accent-foreground hover:bg-ai-accent/90"
+                    >
+                      <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                      Analyze Account
+                    </Button>
+                  </div>
+                )}
+
+                {analysisError ? (
+                  <p className="mt-3 text-xs text-risk-critical">{analysisError}</p>
+                ) : null}
+              </div>
+
               {/* Update form */}
               <div className="rounded-lg border bg-muted/20 p-4">
                 <div className="mb-3 flex items-center justify-between">
