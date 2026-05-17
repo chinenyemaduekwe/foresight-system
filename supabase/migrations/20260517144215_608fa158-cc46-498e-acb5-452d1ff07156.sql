@@ -1,0 +1,1 @@
+CREATE POLICY "Anyone can insert accounts" ON public.accounts FOR INSERT WITH CHECK (true);
