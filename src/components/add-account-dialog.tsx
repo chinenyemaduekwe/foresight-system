@@ -154,7 +154,7 @@ function accountToRow(a: Omit<Account, "id">) {
     days_to_renewal: a.daysToRenewal,
     champion: a.champion || null,
     champion_status: a.championStatus,
-    signals: a.signals,
+    signals: a.signals as unknown as Record<string, unknown>,
   };
 }
 
