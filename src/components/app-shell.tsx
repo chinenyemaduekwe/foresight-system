@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AddAccountDialog } from "@/components/add-account-dialog";
 
 export function AppShell() {
   return (
@@ -23,6 +24,7 @@ export function AppShell() {
               />
             </div>
             <div className="ml-auto flex items-center gap-2">
+              <AddAccountDialog />
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Bell className="h-4 w-4" />
               </Button>
