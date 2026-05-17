@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AlertCircle, CheckCircle2, Download, FileUp, Loader2, Plus, UploadCloud } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { scoreAccount } from "@/data/mockData";
 import type { Account, AccountSignals } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
@@ -154,7 +155,7 @@ function accountToRow(a: Omit<Account, "id">) {
     days_to_renewal: a.daysToRenewal,
     champion: a.champion || null,
     champion_status: a.championStatus,
-    signals: a.signals as unknown as Record<string, unknown>,
+    signals: a.signals as unknown as Json,
   };
 }
 
