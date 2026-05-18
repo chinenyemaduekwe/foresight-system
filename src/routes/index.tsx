@@ -141,7 +141,7 @@ function StatCard({
 }) {
   const t = toneStyles[tone];
   return (
-    <Card className="p-5">
+    <Card className="hover-lift p-5">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
