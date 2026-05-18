@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   AlertTriangle,
   DollarSign,
-  Inbox,
   Loader2,
   Search,
   Sparkles,
@@ -14,6 +13,8 @@ import {
 import { accounts as rawAccounts } from "@/data/mockData";
 import { analyzeAccount, type AnalysisResult } from "@/lib/analyze-account.functions";
 import { AccountDetailPanel } from "@/components/account-detail-panel";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import type { Account, AccountSignals } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -565,15 +566,14 @@ function SignalLogPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Signal Log</h1>
-        <p className="text-sm text-muted-foreground">
-          Week ending May 10, 2026 · {ALL.length} accounts under review
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Weekly review"
+        title="Signal Log"
+        meta={`Week ending May 10, 2026 · ${ALL.length} accounts under review`}
+      />
 
       {/* Summary bar */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="stagger grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard
           label="Accounts Needing Attention"
           value={String(summary.count)}
@@ -613,9 +613,9 @@ function SignalLogPage() {
                 key={c.key}
                 type="button"
                 onClick={() => setFilter(c.key)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 ${
                   active
-                    ? "border-transparent bg-foreground text-background"
+                    ? "border-transparent bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -640,19 +640,16 @@ function SignalLogPage() {
 
       {/* Cards */}
       {sorted.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed py-16 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <Inbox className="h-5 w-5" />
-          </span>
-          <div>
-            <div className="text-sm font-medium">No accounts match this filter.</div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              Try clearing the search or selecting a different category.
-            </div>
-          </div>
+        <div className="rounded-lg border border-dashed">
+          <EmptyState
+            onReset={() => {
+              setFilter("all");
+              setQuery("");
+            }}
+          />
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="stagger space-y-3">
           {sorted.map((a) => {
             const entry = analyses[a.id];
             return (
