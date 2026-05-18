@@ -4,6 +4,7 @@ import type { Account, AccountSignals } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/page-header";
 import {
   Table,
   TableBody,
@@ -176,18 +177,19 @@ function Index() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          {isLoading
+      <PageHeader
+        eyebrow="Overview"
+        title="Dashboard"
+        meta={
+          isLoading
             ? "Loading portfolio health…"
             : error
               ? "Failed to load accounts."
-              : `Portfolio health across ${scored.length} accounts.`}
-        </p>
-      </div>
+              : `Portfolio health across ${scored.length} accounts.`
+        }
+      />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="stagger grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard
           label="Critical accounts"
           value={critical}
@@ -237,7 +239,7 @@ function Index() {
               <TableHead className="w-[10%] text-right">Renewal</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="stagger">
             {priority.map((a) => {
               const tone = a.level as RiskTone;
               const t = toneStyles[tone];
@@ -256,7 +258,7 @@ function Index() {
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                         <div
-                          className={`h-full ${t.bar} transition-all`}
+                          className={`score-bar-fill h-full ${t.bar}`}
                           style={{ width: `${a.score}%` }}
                         />
                       </div>
