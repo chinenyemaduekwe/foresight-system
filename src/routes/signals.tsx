@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   AlertTriangle,
   DollarSign,
-  Inbox,
   Loader2,
   Search,
   Sparkles,
