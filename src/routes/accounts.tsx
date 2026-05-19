@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { AccountDetailPanel } from "@/components/account-detail-panel";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import {
   Table,
   TableBody,
@@ -244,18 +246,18 @@ function AccountsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
-        <p className="text-sm text-muted-foreground">
-          {isLoading
+      <PageHeader
+        title="Accounts"
+        meta={
+          isLoading
             ? "Loading accounts…"
             : error
               ? "Failed to load accounts."
-              : `${sorted.length} of ${scored.length} accounts`}
-        </p>
-      </div>
+              : `${sorted.length} of ${scored.length} accounts`
+        }
+      />
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="animate-fade-up flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           {filterChips.map((c) => {
             const active = filter === c.key;
@@ -292,7 +294,7 @@ function AccountsPage() {
         </div>
       </div>
 
-      <Card className="overflow-hidden p-0">
+      <Card className="animate-fade-up overflow-hidden p-0">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
@@ -319,23 +321,27 @@ function AccountsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sorted.map((a) => {
+            {sorted.map((a, idx) => {
               const t = toneStyles[a.level as RiskTone];
               return (
                 <TableRow
                   key={a.id}
                   onClick={() => setSelectedId(a.id)}
-                  className="cursor-pointer"
+                  className="animate-fade-up cursor-pointer"
+                  style={{ animationDelay: `${Math.min(idx, 20) * 20}ms` }}
                 >
                   <TableCell>
                     <div className="font-medium">{a.name}</div>
-                    <div className="text-xs text-muted-foreground">{a.id}</div>
+                    <div className="mono text-[10px] text-muted-foreground">{a.id}</div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{a.industry}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
-                        <div className={`h-full ${t.bar} transition-all`} style={{ width: `${a.score}%` }} />
+                        <div
+                          className={`h-full ${t.bar} animate-bar`}
+                          style={{ width: `${a.score}%`, transition: "width 600ms cubic-bezier(0.22, 1, 0.36, 1)" }}
+                        />
                       </div>
                       <span className="text-sm font-semibold tabular-nums">{a.score}</span>
                     </div>
@@ -354,8 +360,13 @@ function AccountsPage() {
             })}
             {!isLoading && sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="py-10 text-center text-sm text-muted-foreground">
-                  No accounts match your filters.
+                <TableCell colSpan={8} className="p-0">
+                  <EmptyState
+                    onClear={() => {
+                      setFilter("all");
+                      setQuery("");
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ) : null}
