@@ -7,8 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { AccountDetailPanel } from "@/components/account-detail-panel";
-import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
 import {
   Table,
   TableBody,
@@ -246,17 +244,16 @@ function AccountsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow="Portfolio"
-        title="Accounts"
-        meta={
-          isLoading
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
+        <p className="text-sm text-muted-foreground">
+          {isLoading
             ? "Loading accounts…"
             : error
               ? "Failed to load accounts."
-              : `${sorted.length} of ${scored.length} accounts`
-        }
-      />
+              : `${sorted.length} of ${scored.length} accounts`}
+        </p>
+      </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
@@ -265,15 +262,15 @@ function AccountsPage() {
             const t = c.tone ? toneStyles[c.tone] : null;
             const count = counts[c.key];
             return (
-                <button
+              <button
                 key={c.key}
                 type="button"
                 onClick={() => setFilter(c.key)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                   active
                     ? t
                       ? `border-transparent ${t.bg} ${t.fg}`
-                        : "border-transparent bg-primary text-primary-foreground"
+                      : "border-transparent bg-foreground text-background"
                     : "border-border bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -338,7 +335,7 @@ function AccountsPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
-                        <div className={`score-bar-fill h-full ${t.bar}`} style={{ width: `${a.score}%` }} />
+                        <div className={`h-full ${t.bar} transition-all`} style={{ width: `${a.score}%` }} />
                       </div>
                       <span className="text-sm font-semibold tabular-nums">{a.score}</span>
                     </div>
@@ -357,13 +354,8 @@ function AccountsPage() {
             })}
             {!isLoading && sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="py-2">
-                  <EmptyState
-                    onReset={() => {
-                      setFilter("all");
-                      setQuery("");
-                    }}
-                  />
+                <TableCell colSpan={8} className="py-10 text-center text-sm text-muted-foreground">
+                  No accounts match your filters.
                 </TableCell>
               </TableRow>
             ) : null}

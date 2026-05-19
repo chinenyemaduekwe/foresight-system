@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AddAccountDialog } from "@/components/add-account-dialog";
-import { Toaster } from "@/components/ui/sonner";
 
 export function AppShell() {
   return (
@@ -15,12 +14,8 @@ export function AppShell() {
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/70 px-4 backdrop-blur-xl">
+          <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger className="-ml-1" />
-            <span className="hidden font-serif text-sm tracking-tight text-foreground md:inline">
-              Foresight
-            </span>
-            <span className="eyebrow hidden md:inline">/ workspace</span>
             <div className="relative hidden max-w-sm flex-1 md:block">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -34,15 +29,14 @@ export function AppShell() {
                 <Bell className="h-4 w-4" />
               </Button>
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary/20 text-primary text-xs ring-1 ring-primary/30">FS</AvatarFallback>
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">FS</AvatarFallback>
               </Avatar>
             </div>
           </header>
-          <main className="flex-1 p-4 sm:p-6 lg:p-8">
+          <main className="flex-1 p-6">
             <Outlet />
           </main>
         </div>
-        <Toaster position="bottom-right" richColors closeButton duration={3500} />
       </div>
     </SidebarProvider>
   );

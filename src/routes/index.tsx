@@ -4,7 +4,6 @@ import type { Account, AccountSignals } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PageHeader } from "@/components/page-header";
 import {
   Table,
   TableBody,
@@ -141,7 +140,7 @@ function StatCard({
 }) {
   const t = toneStyles[tone];
   return (
-    <Card className="hover-lift p-5">
+    <Card className="p-5">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
@@ -177,19 +176,18 @@ function Index() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow="Overview"
-        title="Dashboard"
-        meta={
-          isLoading
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          {isLoading
             ? "Loading portfolio health…"
             : error
               ? "Failed to load accounts."
-              : `Portfolio health across ${scored.length} accounts.`
-        }
-      />
+              : `Portfolio health across ${scored.length} accounts.`}
+        </p>
+      </div>
 
-      <div className="stagger grid grid-cols-2 gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Critical accounts"
           value={critical}
@@ -239,7 +237,7 @@ function Index() {
               <TableHead className="w-[10%] text-right">Renewal</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="stagger">
+          <TableBody>
             {priority.map((a) => {
               const tone = a.level as RiskTone;
               const t = toneStyles[tone];
@@ -258,7 +256,7 @@ function Index() {
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                         <div
-                          className={`score-bar-fill h-full ${t.bar}`}
+                          className={`h-full ${t.bar} transition-all`}
                           style={{ width: `${a.score}%` }}
                         />
                       </div>
