@@ -4,6 +4,7 @@ import type { Account, AccountSignals } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/page-header";
 import {
   Table,
   TableBody,
@@ -176,18 +177,18 @@ function Index() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          {isLoading
+      <PageHeader
+        title="Dashboard"
+        meta={
+          isLoading
             ? "Loading portfolio health…"
             : error
               ? "Failed to load accounts."
-              : `Portfolio health across ${scored.length} accounts.`}
-        </p>
-      </div>
+              : `Portfolio health across ${scored.length} accounts`
+        }
+      />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="animate-fade-up grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard
           label="Critical accounts"
           value={critical}
@@ -218,11 +219,11 @@ function Index() {
         />
       </div>
 
-      <Card className="overflow-hidden p-0">
+      <Card className="animate-fade-up overflow-hidden p-0">
         <div className="flex items-center justify-between border-b px-5 py-4">
           <div>
-            <h2 className="text-base font-semibold tracking-tight">Priority queue</h2>
-            <p className="text-xs text-muted-foreground">Top 10 accounts by risk score</p>
+            <h2 className="serif text-xl tracking-tight">Priority queue</h2>
+            <p className="mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Top 10 accounts by risk score</p>
           </div>
         </div>
         <Table>
@@ -238,26 +239,27 @@ function Index() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {priority.map((a) => {
+            {priority.map((a, idx) => {
               const tone = a.level as RiskTone;
               const t = toneStyles[tone];
               return (
                 <TableRow
                   key={a.id}
                   onClick={() => navigate({ to: "/accounts" })}
-                  className="cursor-pointer"
+                  className="animate-fade-up cursor-pointer transition-colors"
+                  style={{ animationDelay: `${idx * 30}ms` }}
                 >
                   <TableCell>
                     <div className="font-medium">{a.name}</div>
-                    <div className="text-xs text-muted-foreground">{a.id}</div>
+                    <div className="mono text-[10px] text-muted-foreground">{a.id}</div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">{a.industry}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                         <div
-                          className={`h-full ${t.bar} transition-all`}
-                          style={{ width: `${a.score}%` }}
+                          className={`animate-bar h-full ${t.bar}`}
+                          style={{ width: `${a.score}%`, transition: "width 600ms cubic-bezier(0.22, 1, 0.36, 1)" }}
                         />
                       </div>
                       <span className="text-sm font-semibold tabular-nums">{a.score}</span>
