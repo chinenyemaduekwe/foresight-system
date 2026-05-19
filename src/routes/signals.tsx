@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   AlertTriangle,
   DollarSign,
-  Inbox,
   Loader2,
   Search,
   Sparkles,
@@ -14,6 +13,8 @@ import {
 import { accounts as rawAccounts } from "@/data/mockData";
 import { analyzeAccount, type AnalysisResult } from "@/lib/analyze-account.functions";
 import { AccountDetailPanel } from "@/components/account-detail-panel";
+import { PageHeader } from "@/components/page-header";
+import { EmptyState } from "@/components/empty-state";
 import type { Account, AccountSignals } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -565,12 +566,10 @@ function SignalLogPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Signal Log</h1>
-        <p className="text-sm text-muted-foreground">
-          Week ending May 10, 2026 · {ALL.length} accounts under review
-        </p>
-      </div>
+      <PageHeader
+        title="Signal Log"
+        meta={`Week ending May 10, 2026 · ${ALL.length} accounts under review`}
+      />
 
       {/* Summary bar */}
       <div className="grid gap-3 sm:grid-cols-3">
@@ -640,31 +639,31 @@ function SignalLogPage() {
 
       {/* Cards */}
       {sorted.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed py-16 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <Inbox className="h-5 w-5" />
-          </span>
-          <div>
-            <div className="text-sm font-medium">No accounts match this filter.</div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              Try clearing the search or selecting a different category.
-            </div>
-          </div>
-        </div>
+        <EmptyState
+          onClear={() => {
+            setFilter("all");
+            setQuery("");
+          }}
+        />
       ) : (
         <div className="space-y-3">
-          {sorted.map((a) => {
+          {sorted.map((a, idx) => {
             const entry = analyses[a.id];
             return (
-              <SignalCard
+              <div
                 key={a.id}
-                account={a}
-                onOpen={() => setSelectedId(a.id)}
-                analysis={entry?.result ?? null}
-                analyzing={entry?.loading ?? false}
-                analysisError={entry?.error ?? null}
-                onAnalyze={() => runAnalyze(a)}
-              />
+                className="animate-fade-up"
+                style={{ animationDelay: `${Math.min(idx, 12) * 30}ms` }}
+              >
+                <SignalCard
+                  account={a}
+                  onOpen={() => setSelectedId(a.id)}
+                  analysis={entry?.result ?? null}
+                  analyzing={entry?.loading ?? false}
+                  analysisError={entry?.error ?? null}
+                  onAnalyze={() => runAnalyze(a)}
+                />
+              </div>
             );
           })}
         </div>
