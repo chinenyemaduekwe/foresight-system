@@ -79,11 +79,7 @@ export function AppSidebar() {
               ))}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={`Critical (${criticalCount})`}>
-                  <Link
-                    to="/accounts"
-                    search={{ filter: "critical" } as never}
-                    className="flex items-center gap-2"
-                  >
+                  <Link to="/accounts" className="flex items-center gap-2">
                     <ShieldAlert className="h-4 w-4 text-risk-critical" />
                     <span>Critical</span>
                     <span className="ml-auto flex items-center gap-1.5 group-data-[collapsible=icon]:hidden">
