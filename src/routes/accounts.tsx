@@ -328,7 +328,7 @@ function AccountsPage() {
                   key={a.id}
                   onClick={() => setSelectedId(a.id)}
                   className="animate-fade-up cursor-pointer"
-                  style={{ animationDelay: `${Math.min(idx, 20) * 20}ms` }}
+                  style={{ animationDelay: `${idx * 25}ms` }}
                 >
                   <TableCell>
                     <div className="font-medium">{a.name}</div>

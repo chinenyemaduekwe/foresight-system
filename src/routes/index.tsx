@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 import { scoreAccount } from "@/data/mockData";
 import type { Account, AccountSignals } from "@/data/mockData";
 import { useAccounts } from "@/hooks/use-accounts";
@@ -132,16 +133,20 @@ function StatCard({
   sublabel,
   tone,
   icon: Icon,
+  className,
+  style,
 }: {
   label: string;
   value: string | number;
   sublabel?: string;
   tone: RiskTone;
   icon: React.ComponentType<{ className?: string }>;
+  className?: string;
+  style?: React.CSSProperties;
 }) {
   const t = toneStyles[tone];
   return (
-    <Card className="p-5">
+    <Card className={cn("p-5", className)} style={style}>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
@@ -188,13 +193,15 @@ function Index() {
         }
       />
 
-      <div className="animate-fade-up grid grid-cols-2 gap-4 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         <StatCard
           label="Critical accounts"
           value={critical}
           sublabel="Score ≥ 70"
           tone="critical"
           icon={ShieldAlert}
+          className="animate-fade-up"
+          style={{ animationDelay: "0ms" }}
         />
         <StatCard
           label="At-risk accounts"
@@ -202,6 +209,8 @@ function Index() {
           sublabel="Score 45–69"
           tone="atrisk"
           icon={AlertTriangle}
+          className="animate-fade-up"
+          style={{ animationDelay: "60ms" }}
         />
         <StatCard
           label="Average risk score"
@@ -209,6 +218,8 @@ function Index() {
           sublabel="Across portfolio"
           tone="avg"
           icon={Gauge}
+          className="animate-fade-up"
+          style={{ animationDelay: "120ms" }}
         />
         <StatCard
           label="Healthy accounts"
@@ -216,6 +227,8 @@ function Index() {
           sublabel="Score < 25"
           tone="healthy"
           icon={Heart}
+          className="animate-fade-up"
+          style={{ animationDelay: "180ms" }}
         />
       </div>
 
@@ -247,7 +260,7 @@ function Index() {
                   key={a.id}
                   onClick={() => navigate({ to: "/accounts" })}
                   className="animate-fade-up cursor-pointer transition-colors"
-                  style={{ animationDelay: `${idx * 30}ms` }}
+                  style={{ animationDelay: `${idx * 25}ms` }}
                 >
                   <TableCell>
                     <div className="font-medium">{a.name}</div>

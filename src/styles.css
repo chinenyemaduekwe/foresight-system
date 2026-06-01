@@ -225,10 +225,42 @@ button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
 
 /* ---------- Animations ---------- */
 @keyframes fade-up {
-  0%   { opacity: 0; transform: translateY(8px); }
+  0%   { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up { animation: fade-up 400ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Shimmer sweep on page titles */
+@keyframes shimmer-sweep {
+  0%   { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--foreground) 0%,
+    var(--foreground) 45%,
+    rgba(255, 255, 255, 0.9) 50%,
+    var(--foreground) 55%,
+    var(--foreground) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shimmer-sweep 600ms ease-out both;
+}
+
+/* Glint sweep on logo icon */
+@keyframes glint-sweep {
+  0%   { transform: translateX(-100%); }
+  8%   { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-glint {
+  animation: glint-sweep 5s ease-in-out infinite;
+}
 
 @keyframes slide-in-right {
   0%   { transform: translateX(24px); opacity: 0; }
