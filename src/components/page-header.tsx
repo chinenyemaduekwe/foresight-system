@@ -12,7 +12,7 @@ export function PageHeader({ title, meta }: Props) {
   return (
     <div className="animate-fade-up space-y-2">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <h1 className="serif text-[34px] font-normal leading-none tracking-tight text-foreground">
+        <h1 className="serif text-[34px] font-normal leading-none tracking-tight text-foreground animate-shimmer">
           {title}
         </h1>
         {meta ? (
