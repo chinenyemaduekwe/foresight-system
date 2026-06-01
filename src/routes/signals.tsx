@@ -223,11 +223,15 @@ function SummaryCard({
   value,
   icon: Icon,
   tone,
+  className,
+  style,
 }: {
   label: string;
   value: string;
   icon: React.ComponentType<{ className?: string }>;
   tone: "red" | "amber" | "purple";
+  className?: string;
+  style?: React.CSSProperties;
 }) {
   const toneMap = {
     red: {
@@ -252,7 +256,8 @@ function SummaryCard({
   const t = toneMap[tone];
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg border ${t.border} ${t.bg} px-4 py-3`}
+      className={`flex items-center gap-3 rounded-lg border ${t.border} ${t.bg} px-4 py-3 ${className ?? ""}`}
+      style={style}
     >
       <span
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${t.iconBg} ${t.fg}`}
@@ -579,18 +584,24 @@ function SignalLogPage() {
           value={String(summary.count)}
           icon={AlertTriangle}
           tone="red"
+          className="animate-fade-up"
+          style={{ animationDelay: "0ms" }}
         />
         <SummaryCard
           label="Total ARR at Risk"
           value={formatArr(summary.arrAtRisk)}
           icon={DollarSign}
           tone="amber"
+          className="animate-fade-up"
+          style={{ animationDelay: "60ms" }}
         />
         <SummaryCard
           label="Avg Churn Probability"
           value={`${summary.avgChurn}%`}
           icon={TrendingDown}
           tone="purple"
+          className="animate-fade-up"
+          style={{ animationDelay: "120ms" }}
         />
       </div>
 
@@ -654,7 +665,7 @@ function SignalLogPage() {
               <div
                 key={a.id}
                 className="animate-fade-up"
-                style={{ animationDelay: `${Math.min(idx, 12) * 30}ms` }}
+                style={{ animationDelay: `${idx * 25}ms` }}
               >
                 <SignalCard
                   account={a}
