@@ -1,5 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
-import { Search, Bell } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Search, Bell, LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -8,8 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AddAccountDialog } from "@/components/add-account-dialog";
 import { Toaster } from "@/components/ui/sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export function AppShell() {
+  const { user, isAuthenticated } = useAuth();
+  const initials = user?.email?.slice(0, 2).toUpperCase() ?? "FS";
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+  };
   return (
     <SidebarProvider>
       <div className="grain-overlay flex min-h-screen w-full bg-background">
@@ -35,9 +45,28 @@ export function AppShell() {
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">FS</AvatarFallback>
-              </Avatar>
+              {isAuthenticated ? (
+                <>
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={handleSignOut}
+                    title="Sign out"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <Button asChild size="sm" variant="outline" className="h-9">
+                  <Link to="/login">Sign in</Link>
+                </Button>
+              )}
             </div>
           </header>
           <main className="flex-1 p-6 md:p-8">
