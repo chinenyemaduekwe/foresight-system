@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2, Download, FileUp, Loader2, Plus, UploadCloud } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import type { Json } from "@/integrations/supabase/types";
 import { scoreAccount } from "@/data/mockData";
 import type { Account, AccountSignals } from "@/data/mockData";
@@ -189,6 +191,7 @@ function downloadTemplate() {
 
 export function AddAccountDialog() {
   const qc = useQueryClient();
+  const { isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState("manual");
 
@@ -324,10 +327,19 @@ export function AddAccountDialog() {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) { resetImport(); } }}>
-      <Button size="sm" onClick={() => setOpen(true)} className="h-9 gap-1.5">
-        <Plus className="h-4 w-4" />
-        Add account
-      </Button>
+      {isAuthenticated ? (
+        <Button size="sm" onClick={() => setOpen(true)} className="h-9 gap-1.5">
+          <Plus className="h-4 w-4" />
+          Add account
+        </Button>
+      ) : (
+        <Button asChild size="sm" variant="outline" className="h-9 gap-1.5" title="Sign in to add accounts">
+          <Link to="/login">
+            <Plus className="h-4 w-4" />
+            Add account
+          </Link>
+        </Button>
+      )}
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add account</DialogTitle>
