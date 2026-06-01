@@ -27,7 +27,7 @@ export function AppShell() {
         <AnimatedBackground />
         <AppSidebar />
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border/70 bg-background/70 px-4 backdrop-blur-xl">
+          <header className="glass-surface sticky top-0 z-20 flex h-14 items-center gap-3 border-x-0 border-t-0 px-4">
             <SidebarTrigger className="-ml-1" />
             <span className="serif hidden text-[15px] tracking-tight text-foreground sm:inline">
               Foresight
