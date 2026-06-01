@@ -29,7 +29,10 @@ export const analyzeAccount = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data }): Promise<AnalysisResult> => {
     const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    if (!key) {
+      console.error("[analyzeAccount] AI gateway key is not configured");
+      throw new Error("AI analysis is unavailable right now. Please try again later.");
+    }
 
     const system =
       "You are a customer success risk analyst. Return ONLY valid JSON matching: " +
@@ -50,7 +53,9 @@ Signals:
 - Usage trend: ${data.signals.usageTrend}
 - Notes: ${data.signals.notes || "(none)"}`;
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    let res: Response;
+    try {
+      res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${key}`,
@@ -64,18 +69,28 @@ Signals:
         ],
         response_format: { type: "json_object" },
       }),
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`AI gateway ${res.status}: ${text.slice(0, 200)}`);
+      });
+    } catch (err) {
+      console.error("[analyzeAccount] Network error calling AI gateway:", err);
+      throw new Error("AI analysis failed. Please try again.");
     }
 
-    const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-    const content = json.choices?.[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(content) as AnalysisResult;
-    return {
-      summary: String(parsed.summary ?? ""),
-      steps: Array.isArray(parsed.steps) ? parsed.steps.slice(0, 3) : [],
-    };
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error(`[analyzeAccount] AI gateway ${res.status}:`, text);
+      throw new Error("AI analysis failed. Please try again.");
+    }
+
+    try {
+      const json = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+      const content = json.choices?.[0]?.message?.content ?? "{}";
+      const parsed = JSON.parse(content) as AnalysisResult;
+      return {
+        summary: String(parsed.summary ?? ""),
+        steps: Array.isArray(parsed.steps) ? parsed.steps.slice(0, 3) : [],
+      };
+    } catch (err) {
+      console.error("[analyzeAccount] Failed to parse AI response:", err);
+      throw new Error("AI analysis failed. Please try again.");
+    }
   });
