@@ -49,8 +49,9 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="sidebar-gradient glass-surface">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-[0_0_24px_-4px_var(--color-primary)]">
-            <Eye className="h-4 w-4" />
+          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-primary text-primary-foreground shadow-[0_0_24px_-4px_var(--color-primary)]">
+            <Eye className="relative z-10 h-4 w-4" />
+            <div className="animate-glint absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="serif text-[17px] leading-none tracking-tight">Foresight</span>
