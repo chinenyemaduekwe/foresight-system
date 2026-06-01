@@ -299,13 +299,14 @@ function SignalCard({
       role="button"
       tabIndex={0}
       onClick={onOpen}
+      data-risk-tint={lvl}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onOpen();
         }
       }}
-      className={`group cursor-pointer rounded-lg border border-l-4 bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md ${ls.border} ${ls.bgTint}`}
+      className={`glass-surface glass-surface-hover group cursor-pointer rounded-lg border-l-4 p-4 hover:-translate-y-0.5 hover:shadow-md ${ls.border}`}
     >
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
