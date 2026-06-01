@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const InputSchema = z.object({
   name: z.string(),
@@ -26,6 +27,7 @@ export type AnalysisResult = {
 };
 
 export const analyzeAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data }): Promise<AnalysisResult> => {
     const key = process.env.LOVABLE_API_KEY;
