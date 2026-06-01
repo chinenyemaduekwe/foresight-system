@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AddAccountDialog } from "@/components/add-account-dialog";
 import { Toaster } from "@/components/ui/sonner";
+import { AnimatedBackground } from "@/components/animated-background";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,6 +24,7 @@ export function AppShell() {
   return (
     <SidebarProvider>
       <div className="grain-overlay flex min-h-screen w-full bg-background">
+        <AnimatedBackground />
         <AppSidebar />
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-border/70 bg-background/70 px-4 backdrop-blur-xl">
