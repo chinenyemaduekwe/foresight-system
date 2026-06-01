@@ -46,7 +46,7 @@ export function AppSidebar() {
   const criticalCount = scored.filter((a) => a.level === "critical").length;
 
   return (
-    <Sidebar collapsible="icon" className="sidebar-gradient">
+    <Sidebar collapsible="icon" className="sidebar-gradient glass-surface">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-2 py-1.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-[0_0_24px_-4px_var(--color-primary)]">
