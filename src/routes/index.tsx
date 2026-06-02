@@ -271,8 +271,8 @@ function Index() {
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-24 overflow-hidden rounded-full bg-muted">
                         <div
-                          className={`animate-bar h-full ${t.bar}`}
-                          style={{ width: `${a.score}%`, transition: "width 600ms cubic-bezier(0.22, 1, 0.36, 1)" }}
+                          className={`animate-bar-fill h-full ${t.bar}`}
+                          style={{ ['--bar-w' as string]: `${a.score}%`, animationDelay: `${idx * 30}ms` }}
                         />
                       </div>
                       <span className="text-sm font-semibold tabular-nums">{a.score}</span>

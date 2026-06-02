@@ -54,9 +54,43 @@ function RiskGauge({ score, tone }: { score: number; tone: RiskTone }) {
   const cy = 100;
   const circumference = Math.PI * r; // half circle length
   const filled = (score / 100) * circumference;
-  const remaining = circumference - filled;
   const t = toneStyles[tone];
   const stroke = `var(--risk-${tone})`;
+
+  // Animate arc + counter from 0 → score over 1s using cubic-bezier(0.16,1,0.3,1)
+  const [displayScore, setDisplayScore] = useState(0);
+  const [arcOffset, setArcOffset] = useState(circumference);
+  useEffect(() => {
+    // Reset to 0 then animate to target on the next frame so the transition runs.
+    setDisplayScore(0);
+    setArcOffset(circumference);
+    const raf1 = requestAnimationFrame(() => {
+      // Trigger CSS transition to final offset
+      setArcOffset(circumference - filled);
+    });
+
+    // JS counter synced to same 1s cubic-bezier(0.16,1,0.3,1) easing
+    const duration = 1000;
+    const start = performance.now();
+    // Approximate cubic-bezier(0.16,1,0.3,1) with a closed-form ease-out-expo-ish curve
+    const ease = (x: number) => {
+      // cubic-bezier(0.16,1,0.3,1) ≈ 1 - 2^(-10x) for visual parity
+      return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+    };
+    let raf2 = 0;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      setDisplayScore(Math.round(ease(p) * score));
+      if (p < 1) raf2 = requestAnimationFrame(tick);
+    };
+    raf2 = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [score, circumference, filled]);
+
   return (
     <div className="relative flex flex-col items-center">
       <svg viewBox="0 0 200 120" className="w-full max-w-[260px]">
@@ -75,12 +109,16 @@ function RiskGauge({ score, tone }: { score: number; tone: RiskTone }) {
           stroke={stroke}
           strokeWidth="14"
           strokeLinecap="round"
-          strokeDasharray={`${filled} ${remaining}`}
-          className="transition-all duration-500"
+          strokeDasharray={circumference}
+          strokeDashoffset={arcOffset}
+          style={{
+            transition:
+              "stroke-dashoffset 1000ms cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
         />
       </svg>
       <div className="-mt-12 flex flex-col items-center">
-        <span className={`text-4xl font-semibold tabular-nums ${t.fg}`}>{score}</span>
+        <span className={`text-4xl font-semibold tabular-nums ${t.fg}`}>{displayScore}</span>
         <span className="mt-0.5 text-xs uppercase tracking-wider text-muted-foreground">
           Risk score
         </span>
