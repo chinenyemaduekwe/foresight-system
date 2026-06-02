@@ -623,7 +623,13 @@ function SignalLogPage() {
               <button
                 key={c.key}
                 type="button"
-                onClick={() => setFilter(c.key)}
+                onClick={(e) => {
+                  const el = e.currentTarget;
+                  el.classList.remove("animate-chip-bounce");
+                  void el.offsetWidth;
+                  el.classList.add("animate-chip-bounce");
+                  setFilter(c.key);
+                }}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                   active
                     ? "border-transparent bg-foreground text-background"
