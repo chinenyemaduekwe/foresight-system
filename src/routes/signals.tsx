@@ -389,8 +389,8 @@ function SignalCard({
           <div className="mt-1 flex items-center gap-2">
             <div className="h-1.5 w-32 overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full bg-foreground/70"
-                style={{ width: `${s.goal_progress_pct}%` }}
+                className="animate-bar-fill h-full bg-foreground/70"
+                style={{ ['--bar-w' as string]: `${s.goal_progress_pct}%` }}
               />
             </div>
             <span className="tabular-nums text-muted-foreground">
