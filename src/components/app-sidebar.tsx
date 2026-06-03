@@ -96,14 +96,14 @@ export function AppSidebar() {
 
         <SidebarGroup className="mt-auto group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel className="mono text-[10px] uppercase tracking-[0.14em]">
-            Portfolio
+            Portfolio Snapshot
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="mx-2 space-y-2 rounded-lg border border-sidebar-border/80 bg-sidebar-accent/30 p-3 backdrop-blur">
-              <MiniStat label="Total accounts" value={String(total)} />
-              <MiniStat label="ARR tracked" value={formatArrTotal(totalArr)} />
+              <MiniStat label="Total Accounts" value={String(total)} />
+              <MiniStat label="Total ARR Tracked" value={formatArrTotal(totalArr)} />
               <MiniStat
-                label="Need attention"
+                label="Accounts Needing Attention"
                 value={String(needAttention)}
                 tone={needAttention > 0 ? "alert" : "default"}
               />
