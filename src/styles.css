@@ -220,6 +220,13 @@ button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
 .sidebar-gradient {
   background:
     linear-gradient(180deg, oklch(0.16 0.012 275) 0%, oklch(0.12 0.01 270) 60%, oklch(0.10 0.008 270) 100%);
+  animation: sidebar-hue-drift 64s ease-in-out infinite;
+}
+
+@keyframes sidebar-hue-drift {
+  0%   { filter: hue-rotate(0deg); }
+  50%  { filter: hue-rotate(18deg); }
+  100% { filter: hue-rotate(0deg); }
 }
 
 /* ---------- Animations ---------- */
