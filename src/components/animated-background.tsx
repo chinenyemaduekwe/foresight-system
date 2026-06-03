@@ -78,8 +78,33 @@ export function AnimatedBackground() {
     const start = performance.now();
     let raf = 0;
 
+    // Mouse-follow state — lerp blob cluster center toward cursor with ~3s lag
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let offsetX = 0;
+    let offsetY = 0;
+    let lastFrame = performance.now();
+    const TAU_MS = 3000; // 3-second time constant
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      document.body.style.setProperty("--mouse-x", `${mouseX}px`);
+      document.body.style.setProperty("--mouse-y", `${mouseY}px`);
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
     const draw = (now: number) => {
       const elapsed = now - start;
+      const dt = Math.min(now - lastFrame, 64);
+      lastFrame = now;
+      // Exponential smoothing — alpha approaches 1 over ~TAU_MS
+      const alpha = 1 - Math.exp(-dt / TAU_MS);
+      const targetX = mouseX - width / 2;
+      const targetY = mouseY - height / 2;
+      offsetX += (targetX - offsetX) * alpha;
+      offsetY += (targetY - offsetY) * alpha;
+
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = "lighter";
 
@@ -89,8 +114,8 @@ export function AnimatedBackground() {
         // ping-pong t for smooth loop
         const raw = (elapsed % blob.duration) / blob.duration;
         const t = raw < 0.5 ? raw * 2 : (1 - raw) * 2;
-        const x = cubicBezier(t, path.xs[0], path.xs[1], path.xs[2], path.xs[3]);
-        const y = cubicBezier(t, path.ys[0], path.ys[1], path.ys[2], path.ys[3]);
+        const x = cubicBezier(t, path.xs[0], path.xs[1], path.xs[2], path.xs[3]) + offsetX * 0.35;
+        const y = cubicBezier(t, path.ys[0], path.ys[1], path.ys[2], path.ys[3]) + offsetY * 0.35;
 
         const pulse = Math.sin((elapsed / path.pulseDuration) * Math.PI * 2 + path.pulsePhase);
         const opacity = Math.max(0.12, Math.min(0.22, path.opacityBase + pulse * path.opacityAmp));
@@ -114,6 +139,7 @@ export function AnimatedBackground() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouseMove);
     };
   }, []);
 
