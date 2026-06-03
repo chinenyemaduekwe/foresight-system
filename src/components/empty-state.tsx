@@ -17,7 +17,7 @@ export function EmptyState({
     <div className="animate-fade-up flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border/70 bg-card/30 py-16 text-center">
       <svg
         viewBox="0 0 96 96"
-        className="h-16 w-16 text-muted-foreground/60"
+        className="h-16 w-16 text-muted-foreground/60 animate-empty-pulse"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.25"
