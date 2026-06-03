@@ -1,11 +1,20 @@
 import { useEffect, useRef } from "react";
 
-const BLOBS = [
+const BLOBS_DARK = [
   { color: "#6366f1", radius: 460, duration: 78000 },
   { color: "#8b5cf6", radius: 420, duration: 86000 },
   { color: "#3b82f6", radius: 380, duration: 64000 },
   { color: "#06b6d4", radius: 340, duration: 72000 },
   { color: "#1a1a2e", radius: 500, duration: 90000 },
+];
+
+// Light-mode pastel palette — soft lavender, pale blue, light mint
+const BLOBS_LIGHT = [
+  { color: "#c7c5f4", radius: 460, duration: 78000 }, // soft lavender
+  { color: "#d4c8f0", radius: 420, duration: 86000 }, // pale violet
+  { color: "#c6dcf5", radius: 380, duration: 64000 }, // pale blue
+  { color: "#c8eedb", radius: 340, duration: 72000 }, // light mint
+  { color: "#e6e9f7", radius: 500, duration: 90000 }, // airy haze
 ];
 
 // Cubic bezier through 4 control points, looped
@@ -56,10 +65,21 @@ export function AnimatedBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let isLight = document.documentElement.classList.contains("light");
+    const themeObserver = new MutationObserver(() => {
+      isLight = document.documentElement.classList.contains("light");
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let paths: Path[] = BLOBS.map((_, i) => makePath(i + 1, window.innerWidth, window.innerHeight));
+    let paths: Path[] = BLOBS_DARK.map((_, i) =>
+      makePath(i + 1, window.innerWidth, window.innerHeight),
+    );
 
     const resize = () => {
       width = window.innerWidth;
@@ -70,7 +90,7 @@ export function AnimatedBackground() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      paths = BLOBS.map((_, i) => makePath(i + 1, width, height));
+      paths = BLOBS_DARK.map((_, i) => makePath(i + 1, width, height));
     };
     resize();
     window.addEventListener("resize", resize);
@@ -108,8 +128,9 @@ export function AnimatedBackground() {
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = "lighter";
 
-      for (let i = 0; i < BLOBS.length; i++) {
-        const blob = BLOBS[i];
+      const palette = isLight ? BLOBS_LIGHT : BLOBS_DARK;
+      for (let i = 0; i < palette.length; i++) {
+        const blob = palette[i];
         const path = paths[i];
         // ping-pong t for smooth loop
         const raw = (elapsed % blob.duration) / blob.duration;
@@ -118,7 +139,9 @@ export function AnimatedBackground() {
         const y = cubicBezier(t, path.ys[0], path.ys[1], path.ys[2], path.ys[3]) + offsetY * 0.35;
 
         const pulse = Math.sin((elapsed / path.pulseDuration) * Math.PI * 2 + path.pulsePhase);
-        const opacity = Math.max(0.12, Math.min(0.22, path.opacityBase + pulse * path.opacityAmp));
+        const opacity = isLight
+          ? Math.max(0.07, Math.min(0.1, 0.085 + pulse * 0.015))
+          : Math.max(0.12, Math.min(0.22, path.opacityBase + pulse * path.opacityAmp));
         const radius = blob.radius * (1 + pulse * 0.08);
 
         const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
@@ -138,6 +161,7 @@ export function AnimatedBackground() {
 
     return () => {
       cancelAnimationFrame(raf);
+      themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
     };
