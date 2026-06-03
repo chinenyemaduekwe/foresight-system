@@ -84,8 +84,7 @@ export function AppSidebar() {
                     <ShieldAlert className="h-4 w-4 text-risk-critical" />
                     <span>Critical</span>
                     <span className="ml-auto flex items-center gap-1.5 group-data-[collapsible=icon]:hidden">
-                      <span className="pulse-dot" />
-                      <span className="mono text-[11px] text-risk-critical">{criticalCount}</span>
+                      <span className="ripple-badge mono">{criticalCount}</span>
                     </span>
                   </Link>
                 </SidebarMenuButton>
