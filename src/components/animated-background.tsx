@@ -1,20 +1,20 @@
 import { useEffect, useRef } from "react";
 
 const BLOBS_DARK = [
-  { color: "#6366f1", radius: 460, duration: 78000 },
-  { color: "#8b5cf6", radius: 420, duration: 86000 },
-  { color: "#3b82f6", radius: 380, duration: 64000 },
-  { color: "#06b6d4", radius: 340, duration: 72000 },
-  { color: "#1a1a2e", radius: 500, duration: 90000 },
+  { color: "#7c3aed", radius: 460, duration: 78000 },
+  { color: "#a855f7", radius: 420, duration: 86000 },
+  { color: "#8b5cf6", radius: 380, duration: 64000 },
+  { color: "#d8b4fe", radius: 340, duration: 72000 },
+  { color: "#1a0022", radius: 500, duration: 90000 },
 ];
 
 // Light-mode pastel palette — soft lavender, pale blue, light mint
 const BLOBS_LIGHT = [
-  { color: "#c7c5f4", radius: 460, duration: 78000 }, // soft lavender
-  { color: "#d4c8f0", radius: 420, duration: 86000 }, // pale violet
-  { color: "#c6dcf5", radius: 380, duration: 64000 }, // pale blue
-  { color: "#c8eedb", radius: 340, duration: 72000 }, // light mint
-  { color: "#e6e9f7", radius: 500, duration: 90000 }, // airy haze
+  { color: "#d8b4fe", radius: 460, duration: 78000 }, // soft lilac
+  { color: "#e9d5ff", radius: 420, duration: 86000 }, // pale violet
+  { color: "#c4b5fd", radius: 380, duration: 64000 }, // lavender
+  { color: "#f3e8ff", radius: 340, duration: 72000 }, // airy purple haze
+  { color: "#ede9fe", radius: 500, duration: 90000 }, // whisper violet
 ];
 
 // Cubic bezier through 4 control points, looped
