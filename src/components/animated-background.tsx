@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 
 const BLOBS_DARK = [
-  { color: "#7c3aed", radius: 460, duration: 78000 },
-  { color: "#a855f7", radius: 420, duration: 86000 },
-  { color: "#8b5cf6", radius: 380, duration: 64000 },
-  { color: "#d8b4fe", radius: 340, duration: 72000 },
-  { color: "#1a0022", radius: 500, duration: 90000 },
+  { color: "#4c1d95", radius: 460, duration: 78000 }, // deep purple
+  { color: "#7c3aed", radius: 420, duration: 86000 }, // violet
+  { color: "#9333ea", radius: 380, duration: 64000 }, // magenta-purple
+  { color: "#2e1065", radius: 340, duration: 72000 }, // dark plum
+  { color: "#0a0010", radius: 500, duration: 90000 }, // near-black
+  { color: "#ffffff", radius: 520, duration: 120000 }, // slow white contrast
 ];
 
 // Light-mode pastel palette — soft lavender, pale blue, light mint
@@ -139,9 +140,12 @@ export function AnimatedBackground() {
         const y = cubicBezier(t, path.ys[0], path.ys[1], path.ys[2], path.ys[3]) + offsetY * 0.35;
 
         const pulse = Math.sin((elapsed / path.pulseDuration) * Math.PI * 2 + path.pulsePhase);
+        const isWhite = blob.color === "#ffffff";
         const opacity = isLight
           ? Math.max(0.07, Math.min(0.1, 0.085 + pulse * 0.015))
-          : Math.max(0.12, Math.min(0.22, path.opacityBase + pulse * path.opacityAmp));
+          : isWhite
+            ? 0.06
+            : Math.max(0.25, Math.min(0.35, 0.3 + pulse * 0.05));
         const radius = blob.radius * (1 + pulse * 0.08);
 
         const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
