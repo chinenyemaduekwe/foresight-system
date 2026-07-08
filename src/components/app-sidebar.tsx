@@ -49,13 +49,13 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="sidebar-gradient glass-surface">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-2 px-2 py-1.5">
-          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-primary text-primary-foreground shadow-[0_0_24px_-4px_var(--color-primary)]">
+          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-md bg-secondary text-secondary-foreground shadow-[0_0_24px_-4px_var(--color-secondary)]">
             <Eye className="relative z-10 h-4 w-4" />
             <div className="animate-glint absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="serif text-[17px] leading-none tracking-tight">Foresight</span>
-            <span className="mt-1 text-[10px] italic text-muted-foreground">
+            <span className="mt-1 text-[10px] italic text-accent">
               Your early warning radar for churn.
             </span>
           </div>
@@ -70,7 +70,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title} className="data-[active=true]:text-secondary">
                     <Link to={item.url} className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -104,7 +104,6 @@ export function AppSidebar() {
               <MiniStat
                 label="Accounts Needing Attention"
                 value={String(needAttention)}
-                tone={needAttention > 0 ? "alert" : "default"}
               />
             </div>
           </SidebarGroupContent>
@@ -117,20 +116,14 @@ export function AppSidebar() {
 function MiniStat({
   label,
   value,
-  tone = "default",
 }: {
   label: string;
   value: string;
-  tone?: "default" | "alert";
 }) {
   return (
     <div className="flex items-center justify-between gap-2">
       <span className="text-[11px] text-muted-foreground">{label}</span>
-      <span
-        className={`mono text-[13px] font-medium tabular-nums ${
-          tone === "alert" ? "text-risk-critical" : "text-foreground"
-        }`}
-      >
+      <span className="mono text-[13px] font-medium tabular-nums text-secondary">
         {value}
       </span>
     </div>
