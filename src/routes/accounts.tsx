@@ -276,9 +276,7 @@ function AccountsPage() {
                 }}
                 className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                   active
-                    ? t
-                      ? `border-transparent ${t.bg} ${t.fg}`
-                      : "border-transparent bg-foreground text-background"
+                    ? "chip-active"
                     : "border-border bg-background text-muted-foreground hover:text-foreground"
                 }`}
               >

@@ -9,13 +9,13 @@ const BLOBS_DARK = [
   { color: "#ffffff", radius: 520, duration: 120000 }, // slow white contrast
 ];
 
-// Light-mode pastel palette — soft lavender, pale blue, light mint
+// Light-mode purple palette — soft lavender, pale lilac, light purple
 const BLOBS_LIGHT = [
-  { color: "#d8b4fe", radius: 460, duration: 78000 }, // soft lilac
-  { color: "#e9d5ff", radius: 420, duration: 86000 }, // pale violet
-  { color: "#c4b5fd", radius: 380, duration: 64000 }, // lavender
-  { color: "#f3e8ff", radius: 340, duration: 72000 }, // airy purple haze
-  { color: "#ede9fe", radius: 500, duration: 90000 }, // whisper violet
+  { color: "#e9d5ff", radius: 460, duration: 78000 }, // soft lavender
+  { color: "#f3e8ff", radius: 420, duration: 86000 }, // pale lilac
+  { color: "#ddd6fe", radius: 380, duration: 64000 }, // light purple
+  { color: "#e9d5ff", radius: 340, duration: 72000 },
+  { color: "#ddd6fe", radius: 500, duration: 90000 },
 ];
 
 // Cubic bezier through 4 control points, looped
@@ -142,7 +142,7 @@ export function AnimatedBackground() {
         const pulse = Math.sin((elapsed / path.pulseDuration) * Math.PI * 2 + path.pulsePhase);
         const isWhite = blob.color === "#ffffff";
         const opacity = isLight
-          ? Math.max(0.07, Math.min(0.1, 0.085 + pulse * 0.015))
+          ? Math.max(0.12, Math.min(0.18, 0.15 + pulse * 0.03))
           : isWhite
             ? 0.06
             : Math.max(0.25, Math.min(0.35, 0.3 + pulse * 0.05));
