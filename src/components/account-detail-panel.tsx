@@ -460,13 +460,13 @@ export function AccountDetailPanel({ account, open, onOpenChange }: Props) {
               </div>
 
               {/* AI Analysis */}
-              <div className="rounded-lg border border-ai-accent/30 bg-gradient-to-br from-ai-accent/10 via-ai-accent/5 to-transparent p-4">
+              <div className="ai-panel rounded-lg p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-ai-accent/15 text-ai-accent">
+                    <span className="ai-panel-label flex h-7 w-7 items-center justify-center rounded-md bg-ai-accent/15">
                       <Sparkles className="h-4 w-4" />
                     </span>
-                    <h3 className="text-sm font-semibold">AI Risk Analysis</h3>
+                    <h3 className="ai-panel-label text-sm font-semibold">AI Risk Analysis</h3>
                   </div>
                   {analysis ? (
                     <Button
