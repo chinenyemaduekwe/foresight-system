@@ -583,3 +583,51 @@ button:active:not(:disabled),
   animation-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
   animation-duration: 200ms !important;
 }
+
+/* ---------- Monitor badge (dark) ---------- */
+.bg-risk-monitor\/10 {
+  background-color: #2e1065 !important;
+  color: #d8b4fe !important;
+  border: 1px solid rgba(124, 58, 237, 0.19) !important;
+}
+.bg-risk-monitor\/10.text-risk-monitor,
+.bg-risk-monitor\/10 .text-risk-monitor {
+  color: #d8b4fe !important;
+}
+.light .bg-risk-monitor\/10 {
+  background-color: #f3e8ff !important;
+  color: #7c3aed !important;
+  border: 1px solid #c4b5fd !important;
+}
+.light .bg-risk-monitor\/10.text-risk-monitor,
+.light .bg-risk-monitor\/10 .text-risk-monitor {
+  color: #7c3aed !important;
+}
+
+/* ---------- Active filter chip ---------- */
+.chip-active {
+  background-color: rgba(124, 58, 237, 0.08) !important;
+  color: #d8b4fe !important;
+  border: 1px solid #a855f7 !important;
+}
+.light .chip-active {
+  background-color: rgba(124, 58, 237, 0.08) !important;
+  color: #7c3aed !important;
+  border: 1px solid #a855f7 !important;
+}
+
+/* ---------- AI analysis panel ---------- */
+.ai-panel {
+  background: linear-gradient(135deg, #0d0020, #140030) !important;
+  border: 1px solid rgba(124, 58, 237, 0.25) !important;
+}
+.ai-panel-label {
+  color: #d8b4fe !important;
+}
+.light .ai-panel {
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff) !important;
+  border: 1px solid rgba(124, 58, 237, 0.2) !important;
+}
+.light .ai-panel-label {
+  color: #7c3aed !important;
+}
